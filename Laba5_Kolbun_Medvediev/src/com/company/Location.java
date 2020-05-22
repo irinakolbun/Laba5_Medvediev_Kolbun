@@ -42,22 +42,8 @@ public class Location {
         double delta_phi = getRad(l2.getLat() - this.getLat());
         double delta_lambda = getRad(l2.getLong() - this.getLong());
         double a = (pow(sin(delta_phi / (double) 2), 2) + (cos(phi1) * cos(phi2)) * (pow(sin(delta_lambda / (double) 2), 2)));
-        double c = 2*(atan(sqrt(a))/ (double) (atan(sqrt(1-a))));
-        return EARTH_RADIUS*c;
+        double c = 2*(atan2((sqrt(a)), (sqrt(1-a))));
+        return EARTH_RADIUS*c; // distance in km
     }
 
 }
-
-
-/**
- * public double sphericalDistance(Location l1, Location l2){
- *         final int EARTH_RADIUS = 6371; // km
- *         double phi1 = getRad(l1.getLat());
- *         double phi2 = getRad(l2.getLat());
- *         double delta_phi = getRad(l2.getLat() - l1.getLat());
- *         double delta_lambda = getRad(l2.getLong() - l1.getLong());
- *         double a = (pow(sin(delta_phi / (double) 2), 2) + (cos(phi1) * cos(phi2)) * (pow(sin(delta_lambda / (double) 2), 2)));
- *         double c = 2*(atan(sqrt(a))/ (double) (atan(sqrt(1-a))));
- *         return EARTH_RADIUS*c;
- *     }
- * **/

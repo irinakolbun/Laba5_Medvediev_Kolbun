@@ -7,3 +7,4 @@ public class Main {
         System.out.println(l1.sphericalDistance(l2));
     }
 }
+//1.9446002281554866
