@@ -1,13 +1,14 @@
 package com.company;
 
+import java.util.ArrayList;
+
 public class Main {
     public static void main(String[] args) {
 
         RTree tree = new RTree();
-
         Location l1 = new Location(0, 5);
-        Location l2 = new Location(0, 3);
-        Location l3 = new Location(0, 0);
+        Location l2 = new Location(0, 0);
+        Location l3 = new Location(5, 5);
         Location l4 = new Location(5, 0);
         Location l5 = new Location(3, 0);
         Location l6 = new Location(1, 1);
@@ -27,6 +28,12 @@ public class Main {
         tree.insertLocation(l10);
         tree.printTree();
 
+        Location current = new Location(0,7);
+        double radius = 6;
+        ArrayList<Location> list = tree.getClosetsLocations(current,radius);
+        for(int i=0;i<list.size();i++){
+            System.out.println(list.get(i).getBounds());
+        }
 //        System.out.println(l1.sphericalDistance(l2));
     }
 }

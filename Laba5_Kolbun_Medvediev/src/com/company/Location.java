@@ -39,19 +39,19 @@ public class Location {
         return x * PI / (double) 180;
     }
 
-    public double sphericalDistance(Location l2){
-         // km
-        double phi1 = getRadius(this.getLatidude());
-        double phi2 = getRadius(l2.getLatidude());
-        double delta_phi = getRadius(l2.getLatidude() - this.getLatidude());
-        double delta_lambda = getRadius(l2.getLongtitude() - this.getLongtitude());
-        double a = (pow(sin(delta_phi / (double) 2), 2) + (cos(phi1) * cos(phi2)) * (pow(sin(delta_lambda / (double) 2), 2)));
-        double c = 2*(atan2((sqrt(a)), (sqrt(1-a))));
-        return EARTH_RADIUS*c; // distance in km
-    }
-
 //    public double sphericalDistance(Location l2){
-//        return Math.sqrt(Math.pow(l2.getLatidude() - this.getLatidude(),2) + Math.pow(l2.getLongtitude() - this.getLongtitude(),2));
+//         // km
+//        double phi1 = getRadius(this.getLatidude());
+//        double phi2 = getRadius(l2.getLatidude());
+//        double delta_phi = getRadius(l2.getLatidude() - this.getLatidude());
+//        double delta_lambda = getRadius(l2.getLongtitude() - this.getLongtitude());
+//        double a = (pow(sin(delta_phi / (double) 2), 2) + (cos(phi1) * cos(phi2)) * (pow(sin(delta_lambda / (double) 2), 2)));
+//        double c = 2*(atan2((sqrt(a)), (sqrt(1-a))));
+//        return EARTH_RADIUS*c; // distance in km
 //    }
+
+    public double sphericalDistance(Location l2){
+        return Math.sqrt(Math.pow(l2.getLatidude() - this.getLatidude(),2) + Math.pow(l2.getLongtitude() - this.getLongtitude(),2));
+    }
 
 }

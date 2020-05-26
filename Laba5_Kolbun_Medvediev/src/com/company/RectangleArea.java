@@ -19,6 +19,61 @@ public class RectangleArea {
         children = new ArrayList<>();
     }
 
+    double getDistanceBetweenRectAndLocation(Location location) {
+        if (this.isInside(location))
+            return 0;
+
+        double left = leftUpper.getLatidude(),
+                right = rightUpper.getLatidude(),
+                up = leftUpper.getLongtitude(),
+                low = leftLower.getLongtitude();
+
+//        System.out.println(left + " " + right + " " + up + " " + low);
+
+        if (location.getLatidude() > left && location.getLatidude() < right) {
+            Location location1 = new Location(location.getLatidude(), (location.getLongtitude() > low) ? (low) : (up));
+            return location.sphericalDistance(location1);
+        } else if (location.getLongtitude() < low && location.getLongtitude() > up) {
+            Location location1 = new Location((location.getLatidude() < left) ? left : right, location.getLongtitude());
+            return location.sphericalDistance(location1);
+        }
+
+        if(location.getLatidude()>right) {
+//            System.out.println(((location.getLongtitude() < up) ? rightUpper : rightLower).getBounds());
+            return location.sphericalDistance((location.getLongtitude() < up) ? rightUpper : rightLower);
+        }
+        else
+            return location.sphericalDistance((location.getLongtitude()<up)?leftUpper:leftLower);
+    }
+
+
+    ArrayList <Location> getClosestLocations(Location location, double radius, ArrayList<Location> locations){
+
+        if(this.children.size()!=0){
+            for(int i=0;i<children.size();i++){
+                RectangleArea child = this.children.get(i);
+                if(child.getDistanceBetweenRectAndLocation(location) <= radius ) {
+                    System.out.println(child.leftUpper.getBounds());
+                    ArrayList<Location> input = child.getClosestLocations(location,radius,new ArrayList<>());
+                    System.out.println();
+                    locations.addAll(input);
+                }
+            }
+        }
+        else {
+            for(int i=0;i<this.locations.size();i++){
+                Location currentLocation = this.locations.get(i);
+                if(currentLocation.sphericalDistance(location)<=radius)
+                    locations.add(currentLocation);
+            }
+
+        }
+
+
+        return locations;
+    }
+
+
     void printRect() {
         System.out.println("LeftUpper: " + leftUpper.getBounds() + ", rightUpper: " + rightUpper.getBounds() + ", leftLower: " + leftLower.getBounds() + ", rightLower: " + rightLower.getBounds());
 
@@ -69,6 +124,7 @@ public class RectangleArea {
 
 
     void addLocation(Location location) {
+        // condition to be sure that location will be inside the rect
         if (!this.isInside(location)) {
             double[] newLimits = getArrayOfLimits(this, location);
             double left = newLimits[0],
@@ -79,12 +135,14 @@ public class RectangleArea {
             this.leftLower = new Location(left, low);
             this.rightUpper = new Location(right, up);
             this.rightLower = new Location(right, low);
-//            System.out.println(left + " " + right + " " + up + " " + low);
-//            this.addLocation(location);
-//            return;
+
         }
 
+
+        // condition if rect doesn't contain locations
         if (this.children.size() != 0) {
+
+            //check if location belongs to the child
             for (int i = 0; i < this.children.size(); i++) {
                 RectangleArea child = this.children.get(i);
                 if (child.isInside(location)) {
@@ -126,16 +184,10 @@ public class RectangleArea {
         } else {
             locations.add(location);
         }
-
-
     }
 
+
     boolean isInside(Location location) {
-//        System.out.println(location.getLatidude() >= leftUpper.getLatidude());
-//        System.out.println(location.getLatidude() <= rightUpper.getLatidude());
-//        System.out.println(location.getLongtitude() >= leftUpper.getLongtitude());
-//        System.out.println(location.getLongtitude() <= leftLower.getLongtitude());
-//        System.out.println(location.getLongtitude());
 
         return (location.getLatidude() >= leftUpper.getLatidude() && location.getLatidude() <= rightUpper.getLatidude() &&
                 location.getLongtitude() >= leftUpper.getLongtitude() && location.getLongtitude() <= leftLower.getLongtitude());
@@ -153,8 +205,7 @@ public class RectangleArea {
 
             if (first.isInside(location)) {
                 first.addLocation(location);
-            }
-            else {
+            } else {
                 second.addLocation(location);
             }
         }

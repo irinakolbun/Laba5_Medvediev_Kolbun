@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.ArrayList;
+
 import static com.company.RectangleArea.MAX_NUMBER;
 
 public class RTree {
@@ -7,6 +9,10 @@ public class RTree {
 
     void printTree(){
         root.printRect();
+    }
+
+    ArrayList<Location> getClosetsLocations(Location location, double radius){
+        return root.getClosestLocations(location, radius, new ArrayList<>());
     }
 
     void insertLocation(Location location) {
