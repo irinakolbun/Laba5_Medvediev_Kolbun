@@ -2,9 +2,32 @@ package com.company;
 
 public class Main {
     public static void main(String[] args) {
-        Location l1 = new Location(100, 200);
-        Location l2 = new Location(200, 100);
-        System.out.println(l1.sphericalDistance(l2));
+
+        RTree tree = new RTree();
+
+        Location l1 = new Location(0, 5);
+        Location l2 = new Location(0, 3);
+        Location l3 = new Location(0, 0);
+        Location l4 = new Location(5, 0);
+        Location l5 = new Location(3, 0);
+        Location l6 = new Location(1, 1);
+        Location l7 = new Location(1, 2);
+        Location l8 = new Location(2, 2);
+        Location l9 = new Location(0, 2);
+        Location l10 = new Location(0, 1);
+        tree.insertLocation(l1);
+        tree.insertLocation(l2);
+        tree.insertLocation(l3);
+        tree.insertLocation(l4);
+        tree.insertLocation(l5);
+        tree.insertLocation(l6);
+        tree.insertLocation(l7);
+        tree.insertLocation(l8);
+        tree.insertLocation(l9);
+        tree.insertLocation(l10);
+        tree.printTree();
+
+//        System.out.println(l1.sphericalDistance(l2));
     }
 }
 //1.9446002281554866

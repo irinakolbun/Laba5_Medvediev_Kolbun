@@ -9,7 +9,7 @@ public class Location {
     // широта - latitude; долгота - longitude
     // 44,60105;33,52291;tourism;hotel;Украина;Гоголя улица,2; structure of the file
     // latitude; longitude; activity; specification; country/name of institufion; address;
-
+    final static int EARTH_RADIUS = 6371;
     private String type;
     private double latitude;
     private double longitude;
@@ -23,27 +23,35 @@ public class Location {
         return this.type;
     }
 
-    public double getLat() {
+    public double getLatidude() {
         return this.latitude;
     }
 
-    public double getLong() {
+    public double getLongtitude() {
         return this.longitude;
     }
 
-    public double getRad( double x ){
+    public String getBounds(){
+        return this.latitude + " " + this.longitude;
+    }
+
+    public double getRadius( double x ){
         return x * PI / (double) 180;
     }
 
     public double sphericalDistance(Location l2){
-        final int EARTH_RADIUS = 6371; // km
-        double phi1 = getRad(this.getLat());
-        double phi2 = getRad(l2.getLat());
-        double delta_phi = getRad(l2.getLat() - this.getLat());
-        double delta_lambda = getRad(l2.getLong() - this.getLong());
+         // km
+        double phi1 = getRadius(this.getLatidude());
+        double phi2 = getRadius(l2.getLatidude());
+        double delta_phi = getRadius(l2.getLatidude() - this.getLatidude());
+        double delta_lambda = getRadius(l2.getLongtitude() - this.getLongtitude());
         double a = (pow(sin(delta_phi / (double) 2), 2) + (cos(phi1) * cos(phi2)) * (pow(sin(delta_lambda / (double) 2), 2)));
         double c = 2*(atan2((sqrt(a)), (sqrt(1-a))));
         return EARTH_RADIUS*c; // distance in km
     }
+
+//    public double sphericalDistance(Location l2){
+//        return Math.sqrt(Math.pow(l2.getLatidude() - this.getLatidude(),2) + Math.pow(l2.getLongtitude() - this.getLongtitude(),2));
+//    }
 
 }
