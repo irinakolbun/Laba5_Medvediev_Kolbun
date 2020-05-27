@@ -6,22 +6,35 @@ import static java.lang.Math.cos;
 
 public class Location {
     // приймати на вході географічну точку (широта, довгота), ціле число N, та тип/підтип шуканого об'єкта
+    // Широта; Довгота; Тип; Підтип; Назва; Адреса;
     // широта - latitude; долгота - longitude
     // 44,60105;33,52291;tourism;hotel;Украина;Гоголя улица,2; structure of the file
     // latitude; longitude; activity; specification; country/name of institufion; address;
     final static int EARTH_RADIUS = 6371;
-    private String type;
     private double latitude;
     private double longitude;
+    public String type;
+    public String subType;
+    public String name;
+    public String address;
 
     Location(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public String getType() {
-        return this.type;
+    Location(double latitude, double longitude, String type, String subType, String name, String address){
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.type = type;
+        this.subType = subType;
+        this.name = name;
+        this.address = address;
     }
+
+//    public String getType() {
+//        return this.type;
+//    }
 
     public double getLatidude() {
         return this.latitude;
