@@ -20,9 +20,10 @@ public class RectangleArea {
     }
 
     double getDistanceBetweenRectAndLocation(Location location) {
-        if (this.isInside(location))
+        if (this.isInside(location)) {
+//            System.out.println("IS INSIDE");
             return 0;
-
+        }
         double left = leftUpper.getLatidude(),
                 right = rightUpper.getLatidude(),
                 up = leftUpper.getLongtitude(),
@@ -46,6 +47,27 @@ public class RectangleArea {
             return location.sphericalDistance((location.getLongtitude()<up)?leftUpper:leftLower);
     }
 
+    Location findLocation(Location location){
+        if(this.isInside(location)) {
+//            System.out.println(this.leftUpper.getBounds());
+//            System.out.println(this.rightLower.getBounds());
+//            System.out.println();
+            if (this.children.size() != 0) {
+                for(RectangleArea rect: this.children){
+                    if(rect.isInside(location))
+                        return rect.findLocation(location);
+                }
+            }
+            if(locations.size()!=0) {
+                for(Location current: locations){
+                    if(location==current)
+                        return current;
+                }
+            }
+        }
+        return null;
+    }
+
 
     ArrayList <Location> getClosestLocations(Location location, double radius, ArrayList<Location> locations){
 
@@ -53,7 +75,9 @@ public class RectangleArea {
             for(int i=0;i<children.size();i++){
                 RectangleArea child = this.children.get(i);
                 if(child.getDistanceBetweenRectAndLocation(location) <= radius ) {
-                    //System.out.println(child.leftUpper.getBounds());
+//                    System.out.println(child.leftUpper.getBounds() + child.rightLower.getBounds());
+//                    System.out.println(child.getDistanceBetweenRectAndLocation(location));
+//                    System.out.println();
                     ArrayList<Location> input = child.getClosestLocations(location,radius,new ArrayList<>());
                     //System.out.println();
                     locations.addAll(input);
@@ -61,8 +85,11 @@ public class RectangleArea {
             }
         }
         else {
+//            System.out.println("KU");
+//            System.out.println(this.children.size());
             for(int i=0;i<this.locations.size();i++){
                 Location currentLocation = this.locations.get(i);
+//                System.out.println( currentLocation.getBounds()+ " " + currentLocation.sphericalDistance(location));
                 if(currentLocation.sphericalDistance(location)<=radius)
                     locations.add(currentLocation);
             }
@@ -76,7 +103,7 @@ public class RectangleArea {
 
     void printRect() {
         System.out.println("LeftUpper: " + leftUpper.getBounds() + ", rightUpper: " + rightUpper.getBounds() + ", leftLower: " + leftLower.getBounds() + ", rightLower: " + rightLower.getBounds());
-
+//
         System.out.println("{");
 //        System.out.println(children.size());
         for (RectangleArea child : children)
@@ -99,6 +126,10 @@ public class RectangleArea {
         return width * height;
     }
 
+
+    void addChildren(RectangleArea rect) {
+        this.children.add(rect);
+    }
     private double[] getArrayOfLimits(RectangleArea rect, Location location) {
         double left = Math.min(location.getLatidude(), rect.leftUpper.getLatidude());
         double right = Math.max(location.getLatidude(), rect.rightUpper.getLatidude());
@@ -108,24 +139,9 @@ public class RectangleArea {
         return new double[]{left, right, up, low};
     }
 
-    private RectangleArea getExtendedArea(RectangleArea rect, Location location) {
-        double[] newLimits = getArrayOfLimits(rect, location);
-        double left = newLimits[0],
-                right = newLimits[1],
-                up = newLimits[2],
-                low = newLimits[3];
-
-        return new RectangleArea(new Location(left, up), new Location(right, up), new Location(left, low), new Location(right, low));
-    }
-
-    void addChildren(RectangleArea rect) {
-        this.children.add(rect);
-    }
-
 
     void addLocation(Location location) {
-        // condition to be sure that location will be inside the rect
-        if (!this.isInside(location)) {
+        if(!this.isInside(location)){
             double[] newLimits = getArrayOfLimits(this, location);
             double left = newLimits[0],
                     right = newLimits[1],
@@ -135,56 +151,11 @@ public class RectangleArea {
             this.leftLower = new Location(left, low);
             this.rightUpper = new Location(right, up);
             this.rightLower = new Location(right, low);
-
         }
-
-
-        // condition if rect doesn't contain locations
-        if (this.children.size() != 0) {
-
-            //check if location belongs to the child
-            for (int i = 0; i < this.children.size(); i++) {
-                RectangleArea child = this.children.get(i);
-                if (child.isInside(location)) {
-                    child.addLocation(location);
-                    if (child.locations.size() >= MAX_NUMBER || child.children.size() >= MAX_NUMBER) {
-                        RectangleArea[] newRects = splitRectangle(child);
-
-                        this.children.remove(i);
-                        this.children.add(newRects[0]);
-                        this.children.add(newRects[1]);
-                    }
-                    return;
-                }
-            }
-
-            double minDeltaSquare = Integer.MAX_VALUE;
-            int minIndex = -1;
-            for (int i = 0; i < children.size(); i++) {
-                RectangleArea rect = children.get(i);
-                double startSquare = rect.getSquare();
-
-                RectangleArea newRect = getExtendedArea(rect, location);
-                double newSquare = newRect.getSquare();
-                double delta = newSquare - startSquare;
-                if (delta < minDeltaSquare) {
-                    minIndex = i;
-                    minDeltaSquare = delta;
-                }
-            }
-
-            if (minIndex != -1) {
-                RectangleArea rectToChange = children.remove(minIndex);
-                RectangleArea changedRect = getExtendedArea(rectToChange, location);
-                changedRect.locations = rectToChange.locations;
-                changedRect.children = rectToChange.children;
-                children.add(minIndex, changedRect);
-            }
-
-        } else {
-            locations.add(location);
-        }
+        this.locations.add(location);
     }
+
+
 
 
     boolean isInside(Location location) {
@@ -200,53 +171,64 @@ public class RectangleArea {
 
     private void rectructureRects(RectangleArea rect, RectangleArea first, RectangleArea second) {
 
+
         for (int i = 0; i < rect.locations.size(); i++) {
             Location location = rect.locations.get(i);
 
             if (first.isInside(location)) {
-                first.addLocation(location);
+                first.locations.add(location);
             } else {
-                second.addLocation(location);
+                second.locations.add(location);
             }
         }
+
         rect.locations = new ArrayList<>();
 
-        for (int i = 0; i < rect.children.size(); i++) {
-            RectangleArea child = rect.children.remove(0);
-            if (first.isInside(child))
-                first.addChildren(child);
-            else
-                second.addChildren(child);
-        }
+    }
 
+    void restructure() {
+        if (this.locations.size() >= MAX_NUMBER) {
+//            System.out.println(this.leftUpper.getBounds() + " " + this.rightLower.getBounds());
+            RectangleArea[] rects = this.splitRectangle(this);
+            this.children.add(rects[0]);
+            this.children.add(rects[1]);
+            this.children.get(0).restructure();
+            this.children.get(1).restructure();
+        }
     }
 
     RectangleArea[] splitRectangle(RectangleArea rect) {
         double width = rect.leftUpper.sphericalDistance(rect.rightUpper);
         double height = rect.leftUpper.sphericalDistance(rect.leftLower);
-//        System.out.println("KUKU LeftUpper: " + rect.leftUpper.getBounds() + ", rightUpper: " + rect.rightUpper.getBounds() + ", leftLower: " + rect.leftLower.getBounds() + ", rightLower: " + rect.rightLower.getBounds());
-//        System.out.println(width + " " + height);
-        if (width >= height) {
-            Location middleUpper = new Location((rect.leftUpper.getLatidude() + rect.rightUpper.getLatidude()) / 2, rect.leftUpper.getLongtitude());
-            Location middleLower = new Location((rect.leftUpper.getLatidude() + rect.rightUpper.getLatidude()) / 2, rect.leftLower.getLongtitude());
-            RectangleArea left = new RectangleArea(rect.leftUpper, middleUpper, rect.leftLower, middleLower);
-            RectangleArea right = new RectangleArea(middleUpper, rect.rightUpper, middleLower, rect.rightLower);
 
-            rectructureRects(rect, left, right);
-            return new RectangleArea[]{left, right};
+            if (width >= height) {
+                Location middleUpper = new Location((rect.leftUpper.getLatidude() + rect.rightUpper.getLatidude()) / 2, rect.leftUpper.getLongtitude());
+                Location middleLower = new Location((rect.leftUpper.getLatidude() + rect.rightUpper.getLatidude()) / 2, rect.leftLower.getLongtitude());
+                RectangleArea left = new RectangleArea(rect.leftUpper, middleUpper, rect.leftLower, middleLower);
+                RectangleArea right = new RectangleArea(middleUpper, rect.rightUpper, middleLower, rect.rightLower);
+//                System.out.println(middleLower.getBounds());
+                rectructureRects(rect, left, right);
+
+//                System.out.println(left.locations.size());
+//                System.out.println(right.locations.size());
+
+                return new RectangleArea[]{left, right};
 //            rect.children.add(left);
 ////            rect.children.add(right);
 //
-        } else {
-            Location middleLeft = new Location(rect.leftUpper.getLatidude(), (rect.leftUpper.getLongtitude() + rect.leftLower.getLongtitude()) / 2);
-            Location middleRight = new Location(rect.rightUpper.getLatidude(), (rect.rightUpper.getLongtitude() + rect.rightLower.getLongtitude()) / 2);
-            RectangleArea up = new RectangleArea(rect.leftUpper, rect.rightUpper, middleLeft, middleRight);
-            RectangleArea low = new RectangleArea(middleLeft, middleRight, rect.leftLower, rect.rightLower);
+            } else {
+                Location middleLeft = new Location(rect.leftUpper.getLatidude(), (rect.leftUpper.getLongtitude() + rect.leftLower.getLongtitude()) / 2);
+                Location middleRight = new Location(rect.rightUpper.getLatidude(), (rect.rightUpper.getLongtitude() + rect.rightLower.getLongtitude()) / 2);
+                RectangleArea up = new RectangleArea(rect.leftUpper, rect.rightUpper, middleLeft, middleRight);
+                RectangleArea low = new RectangleArea(middleLeft, middleRight, rect.leftLower, rect.rightLower);
 
-            rectructureRects(rect, up, low);
-            return new RectangleArea[]{up, low};
+//                rect.printRect();
+                rectructureRects(rect, up, low);
+
+
+                return new RectangleArea[]{up, low};
+            }
         }
-    }
 
 
 }

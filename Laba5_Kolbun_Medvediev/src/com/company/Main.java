@@ -10,26 +10,38 @@ public class Main {
 //        RTree tree = new RTree();
         FileParser data = new FileParser("ukraine_poi.csv");
         RTree tree = data.createTheTree();
-        System.out.println("Enter the data in the following format: latitude, longitude, radius, type/subtype");
-        System.out.println("For example: 49.37649, 40.14664, 500, shop");
-        Scanner input = new Scanner(System.in);
+        tree.restructure();
+        tree.printTree();
 
-        String[] params = input.nextLine().split(", ");
+//        System.out.println(tree.root.findLocation(new Location(51.23445, 31.23326)));
+//        System.out.println("Enter the data in the following format: latitude, longitude, radius, type/subtype");
+//        System.out.println("For example: 49.37649, 40.14664, 500, shop");
+//        Scanner input = new Scanner(System.in);
+//
+//        String[] params = input.nextLine().split(", ");
+//
+//        double latitude = Double.parseDouble(params[0]);
+//        double longitude = Double.parseDouble(params[1]);
+//        double radius = Double.parseDouble(params[2]);
+//        String type = params[3];
+//
+//        Location location = new Location(latitude, longitude);
+//        ArrayList<Location> closestLocations = searchByParameters(location, radius, tree);
+////
+//        System.out.println("Location in this radius by your params: ");
+//
+//
+//        for (Location currentLocation : closestLocations) {
+//            if (currentLocation.type.equals(type) || currentLocation.subType.equals(type))
+//                System.out.println(currentLocation.getBounds());
+//        }
+//
+////
+////        System.out.println(new RectangleArea(new Location(49.39262000000001, 31.28775),new Location(51.49777, 31.28775),new Location(49.39262000000001, 32.7378075), new Location(51.49777, 32.7378075))
+////                .getDistanceBetweenRectAndLocation(new Location(51.23445, 31.23326)));
 
-        double latitude = Double.parseDouble(params[0]);
-        double longitude = Double.parseDouble(params[1]);
-        double radius = Double.parseDouble(params[2]);
-        String type = params[3];
-
-        Location location = new Location(latitude, longitude);
-        ArrayList<Location> closestLocations = searchByParameters(location, radius, tree);
-
-        System.out.println("Location in this radius by your params: ");
-        for (Location currentLocation : closestLocations) {
-            if (currentLocation.type.equals(type) || currentLocation.subType.equals(type))
-                System.out.println(currentLocation.getBounds());
-        }
-
+//        51.23445, 31.23326, 1, shop
+        //49.06183, 22.68685, 1, tourism
     }
 
     //  50.440, 30.490, 2000, shop
