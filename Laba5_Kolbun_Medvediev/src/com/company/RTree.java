@@ -26,6 +26,17 @@ public class RTree {
 
     }
 
+    void findLinearLocation(Location location){
+        int i=0;
+        while(root.locations.get(i).getLatidude()!=location.getLatidude() && root.locations.get(i).getLongtitude()!=location.getLongtitude()){
+            i++;
+        }
+
+        System.out.println("Linear search (amount of comparisons): " + i);
+    }
+    void findLocation(Location location){
+        System.out.println("Tree Search (amount of comparisons): " + root.find(location,0));
+    }
 
     void restructure(){
         root.restructure();

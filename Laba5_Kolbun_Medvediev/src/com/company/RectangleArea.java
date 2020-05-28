@@ -156,7 +156,23 @@ public class RectangleArea {
     }
 
 
+    int find(Location location, int counter){
+        if(this.locations.size()==0){
+            for(int i=0;i<this.children.size();i++){
+                if(children.get(i).isInside(location))
+                    return children.get(i).find(location,counter+1);
+            }
+        }
 
+        else {
+            int i=0;
+            while(this.locations.get(i).getLatidude()!=location.getLatidude() && this.locations.get(i).getLongtitude()!=location.getLongtitude()){
+                i++;
+            }
+            return counter + i;
+        }
+        return 0;
+    }
 
     boolean isInside(Location location) {
 
