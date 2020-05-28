@@ -32,7 +32,7 @@ public class Main {
 
     }
 
-    //
+    //  50.440, 30.490, 2000, shop
     private static ArrayList<Location> searchByParameters(Location location, double radius, RTree tree) {
         ArrayList<Location> locations = tree.getClosetsLocations(location, radius);
         return locations;
