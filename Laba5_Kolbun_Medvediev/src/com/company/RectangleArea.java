@@ -53,9 +53,9 @@ public class RectangleArea {
             for(int i=0;i<children.size();i++){
                 RectangleArea child = this.children.get(i);
                 if(child.getDistanceBetweenRectAndLocation(location) <= radius ) {
-                    System.out.println(child.leftUpper.getBounds());
+                    //System.out.println(child.leftUpper.getBounds());
                     ArrayList<Location> input = child.getClosestLocations(location,radius,new ArrayList<>());
-                    System.out.println();
+                    //System.out.println();
                     locations.addAll(input);
                 }
             }
