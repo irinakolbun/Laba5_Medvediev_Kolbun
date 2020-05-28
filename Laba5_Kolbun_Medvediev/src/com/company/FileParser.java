@@ -9,14 +9,15 @@ import java.util.Scanner;
 
 public class FileParser {
     File file;
-    FileParser(String path){
+
+    FileParser(String path) {
         file = new File(path);
     }
 
-    public Location parseLocation(String strFromFile){
+    public Location parseLocation(String strFromFile) {
         String[] data = strFromFile.split(";");
-        if(data.length <= 2){
-            Location defaultLocation = new Location(0, 0,"","","","");
+        if (data.length <= 2) {
+            Location defaultLocation = new Location(0, 0, "", "", "", "");
             return defaultLocation;
         }
 
@@ -24,10 +25,11 @@ public class FileParser {
         double longitude = Double.parseDouble(data[1].replace(",", "."));
         String type = data[2];
         //city.getName() == null ? city.getName() : "N/A"
-        String subType = data.length>=4 ? data[3] : "";
-        String name = data.length>=5 ? data[4] : "";
-        String address = data.length>=6 ? data[5] : "";
+        String subType = data.length >= 4 ? data[3] : "";
+        String name = data.length >= 5 ? data[4] : "";
+        String address = data.length >= 6 ? data[5] : "";
         Location location = new Location(latitude, longitude, type, subType, name, address);
+
 
         return location;
     }
@@ -35,11 +37,19 @@ public class FileParser {
     public RTree createTheTree() throws FileNotFoundException {
         Scanner sc = new Scanner(file);
         RTree tree = new RTree();
-        while (sc.hasNextLine()){
+        int i = 0;
+        while (sc.hasNextLine()) {
+
             Location location = parseLocation(sc.nextLine());
+//            System.out.println(location.getBounds());
             tree.insertLocation(location);
+            i++;
+//            System.out.println(location.getBounds());
+//            System.out.println(tree.root.findLocation(location));
+//            System.out.println();
 //            System.out.println(location);
         }
+
         return tree;
     }
 

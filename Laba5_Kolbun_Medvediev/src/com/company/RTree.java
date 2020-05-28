@@ -22,17 +22,15 @@ public class RTree {
             root = rect;
             return;
         }
-
         root.addLocation(location);
-        if (root.locations.size() >= MAX_NUMBER || root.children.size() >= MAX_NUMBER) {
-
-            RectangleArea[] newRects = root.splitRectangle(root);
-            Location[] bounds = root.getBounds();
-            root = new RectangleArea(bounds[0], bounds[1], bounds[2], bounds[3]);
-            root.children.add(newRects[0]);
-            root.children.add(newRects[1]);
-        }
 
     }
+
+
+    void restructure(){
+        root.restructure();
+    }
+
+
 
 }
