@@ -45,7 +45,7 @@ public class Location {
     }
 
     public String getBounds(){
-        return this.latitude + " " + this.longitude;
+        return (this.latitude + ", " + this.longitude) + ", type: " + this.type + ", subtype: " + this.subType + ", name: " +  this.name + ", address: " + this.address;
     }
 
     public double getRadius( double x ){

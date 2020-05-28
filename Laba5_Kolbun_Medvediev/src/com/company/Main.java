@@ -7,27 +7,33 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
-        RTree tree = new RTree();
+//        RTree tree = new RTree();
         FileParser data = new FileParser("ukraine_poi.csv");
-        tree = data.createTheTree();
-        System.out.println("Enter the data in the following format: latitude, longitude, radius, type");
-        System.out.println("For example: 49.37649, 40.14664, 100, tourism");
+        RTree tree = data.createTheTree();
+        System.out.println("Enter the data in the following format: latitude, longitude, radius, type/subtype");
+        System.out.println("For example: 49.37649, 40.14664, 500, shop");
         Scanner input = new Scanner(System.in);
-        ArrayList<Location> locations = searchByParameters(input.nextLine(), tree);
-        for(int i = 0; i < locations.size(); i++){
 
-            System.out.println(locations.get(i).getBounds());
+        String[] params = input.nextLine().split(", ");
 
+        double latitude = Double.parseDouble(params[0]);
+        double longitude = Double.parseDouble(params[1]);
+        double radius = Double.parseDouble(params[2]);
+        String type = params[3];
+
+        Location location = new Location(latitude, longitude);
+        ArrayList<Location> closestLocations = searchByParameters(location, radius, tree);
+
+        System.out.println("Location in this radius by your params: ");
+        for (Location currentLocation : closestLocations) {
+            if (currentLocation.type.equals(type) || currentLocation.subType.equals(type))
+                System.out.println(currentLocation.getBounds());
         }
 
- }
-    private static ArrayList<Location> searchByParameters (String input, RTree tree) {
-        String[] data = input.split(",");
-        double latitude = Double.parseDouble(data[0]);
-        double longitude = Double.parseDouble(data[1]);
-        double radius = Double.parseDouble(data[2]);
-        String type = data[3];
-        Location location = new Location(latitude, longitude);
+    }
+
+    //
+    private static ArrayList<Location> searchByParameters(Location location, double radius, RTree tree) {
         ArrayList<Location> locations = tree.getClosetsLocations(location, radius);
         return locations;
     }

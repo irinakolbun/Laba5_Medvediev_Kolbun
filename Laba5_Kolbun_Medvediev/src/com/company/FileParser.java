@@ -16,7 +16,7 @@ public class FileParser {
     public Location parseLocation(String strFromFile){
         String[] data = strFromFile.split(";");
         if(data.length <= 2){
-            Location defaultLocation = new Location(0, 0);
+            Location defaultLocation = new Location(0, 0,"","","","");
             return defaultLocation;
         }
 
